@@ -1,5 +1,5 @@
 # TensorFlow2.0_InceptionV3
-An InceptionV3 implementation in TensorFlow_2.0.
+A TensorFlow_2.0 implementation of InceptionV3.
 
 
 
