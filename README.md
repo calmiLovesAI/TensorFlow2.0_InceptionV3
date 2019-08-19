@@ -1,6 +1,7 @@
 # TensorFlow2.0_InceptionV3
 A TensorFlow_2.0 implementation of InceptionV3.
 
+
 ## Train
 1. Requirements:
 + Python 3.6
@@ -37,6 +38,9 @@ A TensorFlow_2.0 implementation of InceptionV3.
 ## Evaluate
 Run **evaluate.py** to evaluate the model's performance on the test dataset.
 
+## Networks I have implemented with tensorflow2.0:
++ [ResNet34, ResNet50, ResNet101, ResNet152](https://github.com/calmisential/TensorFlow2.0_ResNet)
++ [InceptionV3](https://github.com/calmisential/TensorFlow2.0_InceptionV3)
 
 ## References
 1. The original paper :https://arxiv.org/abs/1512.00567
