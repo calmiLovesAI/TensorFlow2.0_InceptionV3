@@ -6,7 +6,7 @@ from prepare_data import generate_datasets
 
 
 def get_model():
-    model = inception_v3.InceptionV3()
+    model = inception_v3.InceptionV3(num_class=config.NUM_CLASSES)
 
     model.build(input_shape=(None, config.image_height, config.image_width, config.channels))
     model.summary()
