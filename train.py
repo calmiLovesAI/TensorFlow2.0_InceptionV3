@@ -3,7 +3,7 @@ import tensorflow as tf
 from models import inception_v3
 import config
 from prepare_data import generate_datasets
-
+import math
 
 def get_model():
     model = inception_v3.InceptionV3(num_class=config.NUM_CLASSES)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
             print("Epoch: {}/{}, step: {}/{}, loss: {:.5f}, accuracy: {:.5f}".format(epoch + 1,
                                                                                      config.EPOCHS,
                                                                                      step,
-                                                                                     train_count // config.BATCH_SIZE,
+                                                                                     math.ceil(train_count / config.BATCH_SIZE),
                                                                                      train_loss.result(),
                                                                                      train_accuracy.result()))
 
