@@ -49,7 +49,7 @@ if __name__ == '__main__':
         optimizer.apply_gradients(grads_and_vars=zip(gradients, model.trainable_variables))
 
         train_loss(loss)
-        train_accuracy(labels, predictions)
+        train_accuracy(labels, predictions.logits)
 
     @tf.function
     def valid_step(images, labels):
