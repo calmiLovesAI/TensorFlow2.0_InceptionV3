@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     @tf.function
     def test_step(images, labels):
-        predictions = model(images)
+        predictions = model(images, include_aux_logits=False)
         t_loss = loss_object(labels, predictions)
 
         test_loss(t_loss)

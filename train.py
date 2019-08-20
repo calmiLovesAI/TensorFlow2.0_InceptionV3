@@ -42,8 +42,9 @@ if __name__ == '__main__':
     @tf.function
     def train_step(images, labels):
         with tf.GradientTape() as tape:
-            predictions = model(images)
-            loss = loss_object(y_true=labels, y_pred=predictions)
+            predictions = model(images, include_aux_logits=True)
+            loss_aux = loss_object(y_true=labels, y_pred=predictions.aux_logits)
+            loss = loss_aux + loss_object(y_true=labels, y_pred=predictions.logits)
         gradients = tape.gradient(loss, model.trainable_variables)
         optimizer.apply_gradients(grads_and_vars=zip(gradients, model.trainable_variables))
 
@@ -52,7 +53,7 @@ if __name__ == '__main__':
 
     @tf.function
     def valid_step(images, labels):
-        predictions = model(images)
+        predictions = model(images, include_aux_logits=False)
         v_loss = loss_object(labels, predictions)
 
         valid_loss(v_loss)

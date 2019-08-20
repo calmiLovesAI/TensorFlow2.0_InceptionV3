@@ -19,6 +19,36 @@ class BasicConv2D(tf.keras.layers.Layer):
         return output
 
 
+class InceptionAux(tf.keras.layers.Layer):
+    def __init__(self, num_classes):
+        super(InceptionAux, self).__init__()
+        self.avg_pool = tf.keras.layers.AvgPool2D(pool_size=(5, 5),
+                                                  strides=3,
+                                                  padding="same")
+        self.conv1 = BasicConv2D(filters=128,
+                                 kernel_size=(1, 1),
+                                 strides=1,
+                                 padding="same")
+        self.conv2 = BasicConv2D(filters=768,
+                                 kernel_size=(5, 5),
+                                 strides=1,
+                                 padding="same")
+        self.global_avg_pool = tf.keras.layers.GlobalAveragePooling2D()
+        self.flat = tf.keras.layers.Flatten()
+        self.fc = tf.keras.layers.Dense(units=num_classes, activation=tf.keras.activations.linear)
+
+    def call(self, inputs, **kwargs):
+        output = self.avg_pool(inputs)
+        output = self.conv1(output)
+        output = self.conv2(output)
+        output = self.global_avg_pool(output)
+        output = self.flat(output)
+        output = self.fc(output)
+
+        return output
+
+
+
 class InceptionModule_1(tf.keras.layers.Layer):
     def __init__(self, filter_num):
         super(InceptionModule_1, self).__init__()
