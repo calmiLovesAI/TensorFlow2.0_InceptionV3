@@ -60,7 +60,7 @@ if __name__ == '__main__':
         valid_accuracy(labels, predictions)
 
     # start training
-    for epoch in range(config.EPOCHS):
+    for epoch in range(1):
         step = 0
         for images, labels in train_dataset:
             step += 1
@@ -83,4 +83,4 @@ if __name__ == '__main__':
                                                                   valid_loss.result(),
                                                                   valid_accuracy.result()))
 
-
+    model.save_weights(config.save_model_dir, save_format='tf')
