@@ -60,7 +60,7 @@ if __name__ == '__main__':
         valid_accuracy(labels, predictions)
 
     # start training
-    for epoch in range(1):
+    for epoch in range(config.EPOCHS):
         step = 0
         for images, labels in train_dataset:
             step += 1
