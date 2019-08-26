@@ -5,7 +5,8 @@ import config
 from prepare_data import generate_datasets
 import math
 
-def get_model():
+def get_model(flag):
+    tf.keras.backend.set_learning_phase(flag)
     model = inception_v3.InceptionV3(num_class=config.NUM_CLASSES)
 
     model.build(input_shape=(None, config.image_height, config.image_width, config.channels))
@@ -27,7 +28,7 @@ if __name__ == '__main__':
 
 
     # create model
-    model = get_model()
+    model = get_model(flag=1)
 
     # define loss and optimizer
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
