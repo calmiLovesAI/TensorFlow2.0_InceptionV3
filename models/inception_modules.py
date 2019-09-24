@@ -11,12 +11,54 @@ class BasicConv2D(tf.keras.layers.Layer):
         self.bn = tf.keras.layers.BatchNormalization()
         self.relu = tf.keras.layers.ReLU()
 
-    def call(self, inputs, **kwargs):
+    def call(self, inputs, training=None, **kwargs):
         output = self.conv(inputs)
-        output = self.bn(output)
+        output = self.bn(output, training=training)
         output = self.relu(output)
 
         return output
+
+class Preprocess(tf.keras.layers.Layer):
+    def __init__(self):
+        super(Preprocess, self).__init__()
+        self.conv1 = BasicConv2D(filters=32,
+                                 kernel_size=(3, 3),
+                                 strides=2,
+                                 padding="same")
+        self.conv2 = BasicConv2D(filters=32,
+                                 kernel_size=(3, 3),
+                                 strides=1,
+                                 padding="same")
+        self.conv3 = BasicConv2D(filters=64,
+                                 kernel_size=(3, 3),
+                                 strides=1,
+                                 padding="same")
+
+        self.maxpool1 = tf.keras.layers.MaxPool2D(pool_size=(3, 3),
+                                                  strides=2,
+                                                  padding="same")
+        self.conv4 = BasicConv2D(filters=80,
+                                 kernel_size=(1, 1),
+                                 strides=1,
+                                 padding="same")
+        self.conv5 = BasicConv2D(filters=192,
+                                 kernel_size=(3, 3),
+                                 strides=1,
+                                 padding="same")
+        self.maxpool2 = tf.keras.layers.MaxPool2D(pool_size=(3, 3),
+                                                  strides=2,
+                                                  padding="same")
+
+    def call(self, inputs, training=None, **kwargs):
+        x = self.conv1(inputs, training=training)
+        x = self.conv2(x, training=training)
+        x = self.conv3(x, training=training)
+        x = self.maxpool1(x)
+        x = self.conv4(x, training=training)
+        x = self.conv5(x, training=training)
+        x = self.maxpool2(x)
+
+        return x
 
 
 class InceptionAux(tf.keras.layers.Layer):
@@ -37,10 +79,10 @@ class InceptionAux(tf.keras.layers.Layer):
         self.flat = tf.keras.layers.Flatten()
         self.fc = tf.keras.layers.Dense(units=num_classes, activation=tf.keras.activations.linear)
 
-    def call(self, inputs, **kwargs):
+    def call(self, inputs, training=None, **kwargs):
         output = self.avg_pool(inputs)
-        output = self.conv1(output)
-        output = self.conv2(output)
+        output = self.conv1(output, training=training)
+        output = self.conv2(output, training=training)
         output = self.global_avg_pool(output)
         output = self.flat(output)
         output = self.fc(output)
@@ -93,19 +135,19 @@ class InceptionModule_1(tf.keras.layers.Layer):
                                      strides=1,
                                      padding="same")
 
-    def call(self, inputs, **kwargs):
+    def call(self, inputs, training=None, **kwargs):
 
-        b0 = self.conv_b0_1(inputs)
+        b0 = self.conv_b0_1(inputs, training=training)
 
-        b1 = self.conv_b1_1(inputs)
-        b1 = self.conv_b1_2(b1)
+        b1 = self.conv_b1_1(inputs, training=training)
+        b1 = self.conv_b1_2(b1, training=training)
 
-        b2 = self.conv_b2_1(inputs)
-        b2 = self.conv_b2_2(b2)
-        b2 = self.conv_b2_3(b2)
+        b2 = self.conv_b2_1(inputs, training=training)
+        b2 = self.conv_b2_2(b2, training=training)
+        b2 = self.conv_b2_3(b2, training=training)
 
         b3 = self.avgpool_b3_1(inputs)
-        b3 = self.conv_b3_2(b3)
+        b3 = self.conv_b3_2(b3, training=training)
 
         output = tf.keras.layers.concatenate([b0, b1, b2, b3], axis=-1)
         return output
@@ -139,12 +181,12 @@ class InceptionModule_2(tf.keras.layers.Layer):
                                                       strides=2,
                                                       padding="valid")
 
-    def call(self, inputs, **kwargs):
-        b0 = self.conv_b0_1(inputs)
+    def call(self, inputs, training=None, **kwargs):
+        b0 = self.conv_b0_1(inputs, training=training)
 
-        b1 = self.conv_b1_1(inputs)
-        b1 = self.conv_b1_2(b1)
-        b1 = self.conv_b1_3(b1)
+        b1 = self.conv_b1_1(inputs, training=training)
+        b1 = self.conv_b1_2(b1, training=training)
+        b1 = self.conv_b1_3(b1, training=training)
 
         b2 = self.maxpool_b2_1(inputs)
 
@@ -206,21 +248,21 @@ class InceptionModule_3(tf.keras.layers.Layer):
                                      strides=1,
                                      padding="same")
 
-    def call(self, inputs, **kwargs):
-        b0 = self.conv_b0_1(inputs)
+    def call(self, inputs, training=None, **kwargs):
+        b0 = self.conv_b0_1(inputs, training=training)
 
-        b1 = self.conv_b1_1(inputs)
-        b1 = self.conv_b1_2(b1)
-        b1 = self.conv_b1_3(b1)
+        b1 = self.conv_b1_1(inputs, training=training)
+        b1 = self.conv_b1_2(b1, training=training)
+        b1 = self.conv_b1_3(b1, training=training)
 
-        b2 = self.conv_b2_1(inputs)
-        b2 = self.conv_b2_2(b2)
-        b2 = self.conv_b2_3(b2)
-        b2 = self.conv_b2_4(b2)
-        b2 = self.conv_b2_5(b2)
+        b2 = self.conv_b2_1(inputs, training=training)
+        b2 = self.conv_b2_2(b2, training=training)
+        b2 = self.conv_b2_3(b2, training=training)
+        b2 = self.conv_b2_4(b2, training=training)
+        b2 = self.conv_b2_5(b2, training=training)
 
         b3 = self.avgpool_b3_1(inputs)
-        b3 = self.conv_b3_2(b3)
+        b3 = self.conv_b3_2(b3, training=training)
 
         output = tf.keras.layers.concatenate([b0, b1, b2, b3], axis=-1)
         return output
@@ -266,14 +308,14 @@ class InceptionModule_4(tf.keras.layers.Layer):
                                                       strides=2,
                                                       padding="valid")
 
-    def call(self, inputs, **kwargs):
-        b0 = self.conv_b0_1(inputs)
-        b0 = self.conv_b0_2(b0)
+    def call(self, inputs, training=None, **kwargs):
+        b0 = self.conv_b0_1(inputs, training=training)
+        b0 = self.conv_b0_2(b0, training=training)
 
-        b1 = self.conv_b1_1(inputs)
-        b1 = self.conv_b1_2(b1)
-        b1 = self.conv_b1_3(b1)
-        b1 = self.conv_b1_4(b1)
+        b1 = self.conv_b1_1(inputs, training=training)
+        b1 = self.conv_b1_2(b1, training=training)
+        b1 = self.conv_b1_3(b1, training=training)
+        b1 = self.conv_b1_4(b1, training=training)
 
         b2 = self.maxpool_b2_1(inputs)
 
@@ -316,21 +358,21 @@ class InceptionModule_5(tf.keras.layers.Layer):
                                                  strides=1,
                                                  padding="same")
 
-    def call(self, inputs, **kwargs):
-        b0 = self.conv1(inputs)
+    def call(self, inputs, training=None, **kwargs):
+        b0 = self.conv1(inputs, training=training)
 
-        b1 = self.conv2(inputs)
-        b1_part_a = self.conv4(b1)
-        b1_part_b = self.conv5(b1)
+        b1 = self.conv2(inputs, training=training)
+        b1_part_a = self.conv4(b1, training=training)
+        b1_part_b = self.conv5(b1, training=training)
         b1 = tf.keras.layers.concatenate([b1_part_a, b1_part_b], axis=-1)
 
-        b2 = self.conv3(inputs)
-        b2 = self.conv6(b2)
-        b2_part_a = self.conv4(b2)
-        b2_part_b = self.conv5(b2)
+        b2 = self.conv3(inputs, training=training)
+        b2 = self.conv6(b2, training=training)
+        b2_part_a = self.conv4(b2, training=training)
+        b2_part_b = self.conv5(b2, training=training)
         b2 = tf.keras.layers.concatenate([b2_part_a, b2_part_b], axis=-1)
         b3 = self.avgpool(inputs)
-        b3 = self.conv7(b3)
+        b3 = self.conv7(b3, training=training)
 
         output = tf.keras.layers.concatenate([b0, b1, b2, b3], axis=-1)
         return output
