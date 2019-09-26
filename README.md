@@ -1,6 +1,7 @@
 # TensorFlow2.0_InceptionV3
 A TensorFlow_2.0 implementation of InceptionV3.
 
+See https://github.com/calmisential/Basic_CNNs_TensorFlow2.0 for more CNNs.
 
 ## Train
 1. Requirements:
